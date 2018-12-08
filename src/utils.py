@@ -245,7 +245,7 @@ def get_exp_path(params):
                 break
     else:
         exp_path = os.path.join(exp_folder, params.exp_id)
-        assert not os.path.isdir(exp_path), exp_path
+        #assert not os.path.isdir(exp_path), exp_path
     # create the dump folder
     if not os.path.isdir(exp_path):
         subprocess.Popen("mkdir %s" % exp_path, shell=True).wait()

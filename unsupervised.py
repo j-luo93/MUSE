@@ -38,6 +38,7 @@ parser.add_argument("--emb_dim", type=int, default=300, help="Embedding dimensio
 parser.add_argument("--max_vocab", type=int, default=200000, help="Maximum vocabulary size (-1 to disable)")
 # mapping
 parser.add_argument("--map_id_init", type=bool_flag, default=True, help="Initialize the mapping as an identity matrix")
+parser.add_argument("--full_vocab", type=bool_flag, default=False, help="Use full vocab")
 parser.add_argument("--map_beta", type=float, default=0.001, help="Beta for orthogonalization")
 # discriminator
 parser.add_argument("--dis_layers", type=int, default=2, help="Discriminator layers")
