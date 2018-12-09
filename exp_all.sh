@@ -6,13 +6,17 @@ src=$2
 d=$(dirname "$0")
 
 if [[ $src = 'es' ]]; then
-    id=kg4j3u604o
+    id=gbz000sk44
     #year=13
     tw="buen bueno"
 elif [[ $src = 'de' ]]; then
-    id=1dghwzosvk
+    id=8w8er7sbk8
     #year=17
     tw="gute Tag"
+elif [[ $src = 'fr' ]]; then
+    id=wq84zllxb2
+    #year=17
+    tw="bien noir"
 fi
 
 if [[ $get_all -eq 1 ]]; then

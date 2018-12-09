@@ -295,8 +295,8 @@ def pipeline(src_suf, tgt_suf, arg_string, size, old_params=None, data_dir='13-e
         load_path = '../EMNLP-NMT/data/%s/torch_save.%s' %(data_dir, suf)
         vocab_path = '../EMNLP-NMT/data/%s/%s' %(data_dir, suf)
         output_path = 'wv.%s' %suf
-        if not os.path.isfile(output_path):
-            write_wv_to_file(load_path, vocab_path, output_path, size)
+        #if not os.path.isfile(output_path):
+        write_wv_to_file(load_path, vocab_path, output_path, size)
         
         if suf == src_suf:
             arg_string += ' --src_emb %s' %output_path
