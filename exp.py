@@ -109,7 +109,7 @@ def word_translation(evaluator, input_wordlist, full_vocab=True):
     return results, src_emb, tgt_emb
 
 def write_wv_to_file(load_path, vocab_path, output_path, size):
-    print(load_path)
+    print('writing wv file to %s' %output_path)
     vc, ic = torch.load(load_path)
 
     voc = vocab.Vocab(vocab_path)
@@ -289,6 +289,7 @@ def pipeline(src_suf, tgt_suf, arg_string, size, old_params=None, data_dir='13-e
     import os
 #     arg_string = '--exp_id k0gf0f007v --src_lang es --tgt_lang en '\
 #                  '--n_refinement 5 --emb_dim 500 --normalize_embeddings center --full_vocab'
+    lazy_wvs = dict()
     for suf in [src_suf, tgt_suf]:
         if suf is None:
             continue
@@ -296,7 +297,7 @@ def pipeline(src_suf, tgt_suf, arg_string, size, old_params=None, data_dir='13-e
         vocab_path = '../EMNLP-NMT/data/%s/%s' %(data_dir, suf)
         output_path = 'wv.%s' %suf
         #if not os.path.isfile(output_path):
-        write_wv_to_file(load_path, vocab_path, output_path, size)
+        lazy_wvs[suf] = LazyObject(lambda load_path=load_path, vocab_path=vocab_path, output_path=output_path: write_wv_to_file(load_path, vocab_path, output_path, size))
         
         if suf == src_suf:
             arg_string += ' --src_emb %s' %output_path
@@ -326,6 +327,9 @@ def pipeline(src_suf, tgt_suf, arg_string, size, old_params=None, data_dir='13-e
         if center:
             save_path += '.center'
         vocab_path = '../EMNLP-NMT/data/%s/%s' %(data_dir, suf)
+        for k in lazy_wvs:
+            lazy_wvs[k].compute()
+        
         voc = vocab.Vocab(vocab_path)
         test_eval = lazy_test.compute()[1][0]
         
@@ -353,10 +357,12 @@ class LazyObject(object):
     def __init__(self, func):
         self.func = func
         self.ret = None
+        self.computed = False
     
     def compute(self):
-        if self.ret is None:
+        if not self.computed:
             self.ret = self.func()
+            self.computed = True
         return self.ret
 
 if __name__ == '__main__':
@@ -413,10 +419,9 @@ if __name__ == '__main__':
         torch.save([tgt_emb, tgt_words], all_path_tgt)
 
         get_nns(saved_eval, args.test_words)
-
     if args.src_vocab_path:
         assert len(args.src_vocab_path) >= len(args.tgt_vocab_path)
-
+        
         for svp, tvp in zip(args.src_vocab_path, args.tgt_vocab_path):
             svn = os.path.basename(svp)
             tvn = os.path.basename(tvp)
